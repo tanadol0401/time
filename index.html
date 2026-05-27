@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #181b1f;
+      color: #d8d9da;
+      font-family: sans-serif;
+      padding: 16px;
+      font-size: 14px;
+    }
+    h3 {
+      color: #ff6600;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+    label { display: block; margin-bottom: 4px; color: #aaa; font-size: 13px; }
+    input[type="number"], input[type="time"] {
+      width: 100%;
+      padding: 8px;
+      background: #2c2f35;
+      border: 1px solid #444;
+      color: white;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .section {
+      background: #222426;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .row { display: flex; gap: 10px; }
+    .row > div { flex: 1; }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+    .btn-submit { background: #ff6600; color: white; }
+    .btn-start  { background: #1a9e4a; color: white; }
+    .btn-stop   { background: #c0392b; color: white; display:none; }
+    .btn-oneshot{ background: #1e6fbf; color: white; }
+    #status, #status2 {
+      margin-top: 10px;
+      font-size: 13px;
+      min-height: 20px;
+      color: #73bf69;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      margin-left: 6px;
+    }
+    .badge-live { background: #1a9e4a; color: white; }
+    .badge-wait { background: #1e6fbf; color: white; }
+    #countdown { color: #f5a623; font-size: 13px; margin-top: 6px; min-height: 18px; }
+    #countdown2 { color: #f5a623; font-size: 13px; margin-top: 6px; min-height: 18px; }
+  </style>
+</head>
+<body>
+
+  <!-- ข้อมูล -->
+  <div class="section">
+    <h3>📡 ข้อมูลที่จะส่ง</h3>
+    <div class="row">
+      <div>
+        <label>Field 1 (Temperature °C)</label>
+        <input type="number" id="field1" placeholder="เช่น 30.5">
+      </div>
+      <div>
+        <label>Field 2 (Humidity %)</label>
+        <input type="number" id="field2" placeholder="เช่น 65">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Field 3</label>
+        <input type="number" id="field3" placeholder="optional">
+      </div>
+      <div>
+        <label>Write API Key</label>
+        <input type="text" id="apikey" placeholder="YOUR_WRITE_API_KEY" style="width:100%;padding:8px;background:#2c2f35;border:1px solid #444;color:white;border-radius:4px;margin-bottom:10px;">
+      </div>
+    </div>
+    <button class="btn-submit" onclick="sendNow()">📤 ส่งทันที</button>
+    <div id="status"></div>
+  </div>
+
+  <!-- แบบที่ 1: ส่งครั้งเดียวตามเวลา -->
+  <div class="section">
+    <h3>⏰ ส่งครั้งเดียวตามเวลาที่ตั้ง</h3>
+    <label>เวลาที่ต้องการส่ง</label>
+    <input type="time" id="oneshot-time">
+    <button class="btn-oneshot" onclick="setOneShot()">⏱ ตั้งเวลาส่ง</button>
+    <div id="countdown"></div>
+  </div>
+
+  <!-- แบบที่ 2: ส่งซ้ำทุก X วินาที -->
+  <div class="section">
+    <h3>🔁 ส่งซ้ำทุก X วินาที (Interval)</h3>
+    <label>ส่งทุกกี่วินาที (ขั้นต่ำ 15 วินาที)</label>
+    <input type="number" id="interval-sec" value="15" min="15">
+    <button class="btn-start" id="btn-start" onclick="startInterval()">▶ เริ่มส่งซ้ำ</button>
+    <button class="btn-stop"  id="btn-stop"  onclick="stopInterval()">⏹ หยุด</button>
+    <div id="countdown2"></div>
+    <div id="status2"></div>
+  </div>
+
+<script>
+  let oneshotTimer = null;
+  let oneshotCountdown = null;
+  let intervalTimer = null;
+  let intervalCountdown = null;
+  let nextSendIn = 0;
+
+  function getData() {
+    return {
+      key: document.getElementById("apikey").value.trim(),
+      f1: document.getElementById("field1").value,
+      f2: document.getElementById("field2").value,
+      f3: document.getElementById("field3").value,
+    };
+  }
+
+  function sendToThingSpeak(statusId) {
+    const { key, f1, f2, f3 } = getData();
+    if (!key) {
+      document.getElementById(statusId).innerText = "❌ กรุณาใส่ API Key";
+      return;
+    }
+    let url = `https://api.thingspeak.com/update?api_key=${key}`;
+    if (f1) url += `&field1=${f1}`;
+    if (f2) url += `&field2=${f2}`;
+    if (f3) url += `&field3=${f3}`;
+
+    fetch(url)
+      .then(r => r.text())
+      .then(res => {
+        const time = new Date().toLocaleTimeString();
+        if (res === "0") {
+          document.getElementById(statusId).innerText = `❌ [${time}] ส่งไม่สำเร็จ (รอ 15 วิ)`;
+        } else {
+          document.getElementById(statusId).innerText = `✅ [${time}] ส่งสำเร็จ! Entry: ${res}`;
+        }
+      })
+      .catch(e => {
+        document.getElementById(statusId).innerText = `❌ Error: ${e}`;
+      });
+  }
+
+  // ส่งทันที
+  function sendNow() {
+    sendToThingSpeak("status");
+  }
+
+  // แบบที่ 1: One-shot
+  function setOneShot() {
+    clearTimeout(oneshotTimer);
+    clearInterval(oneshotCountdown);
+
+    const timeVal = document.getElementById("oneshot-time").value;
+    if (!timeVal) {
+      document.getElementById("countdown").innerText = "❌ กรุณาเลือกเวลา";
+      return;
+    }
+
+    const now = new Date();
+    const [h, m] = timeVal.split(":").map(Number);
+    const target = new Date();
+    target.setHours(h, m, 0, 0);
+    if (target <= now) target.setDate(target.getDate() + 1); // ถ้าเลยเวลาแล้วตั้งเป็นพรุ่งนี้
+
+    const diff = target - now;
+
+    oneshotCountdown = setInterval(() => {
+      const remaining = target - new Date();
+      if (remaining <= 0) {
+        clearInterval(oneshotCountdown);
+        return;
+      }
+      const hh = Math.floor(remaining / 3600000);
+      const mm = Math.floor((remaining % 3600000) / 60000);
+      const ss = Math.floor((remaining % 60000) / 1000);
+      document.getElementById("countdown").innerText =
+        `⏳ จะส่งใน ${hh}ชม. ${mm}นาที ${ss}วินาที`;
+    }, 1000);
+
+    oneshotTimer = setTimeout(() => {
+      clearInterval(oneshotCountdown);
+      sendToThingSpeak("status");
+      document.getElementById("countdown").innerText = `✅ ส่งแล้วตอน ${timeVal}`;
+    }, diff);
+
+    document.getElementById("countdown").innerText = `⏳ ตั้งเวลาส่งเวลา ${timeVal} แล้ว`;
+  }
+
+  // แบบที่ 2: Interval
+  function startInterval() {
+    const sec = parseInt(document.getElementById("interval-sec").value);
+    if (sec < 15) {
+      document.getElementById("status2").innerText = "❌ ขั้นต่ำ 15 วินาที";
+      return;
+    }
+
+    document.getElementById("btn-start").style.display = "none";
+    document.getElementById("btn-stop").style.display = "block";
+
+    nextSendIn = sec;
+
+    intervalCountdown = setInterval(() => {
+      nextSendIn--;
+      document.getElementById("countdown2").innerText = `🔁 จะส่งอีกใน ${nextSendIn} วินาที...`;
+      if (nextSendIn <= 0) nextSendIn = sec;
+    }, 1000);
+
+    // ส่งทันทีครั้งแรก
+    sendToThingSpeak("status2");
+
+    intervalTimer = setInterval(() => {
+      sendToThingSpeak("status2");
+    }, sec * 1000);
+  }
+
+  function stopInterval() {
+    clearInterval(intervalTimer);
+    clearInterval(intervalCountdown);
+    intervalTimer = null;
+    document.getElementById("btn-start").style.display = "block";
+    document.getElementById("btn-stop").style.display = "none";
+    document.getElementById("countdown2").innerText = "⏹ หยุดการส่งแล้ว";
+  }
+</script>
+</body>
+</html>
