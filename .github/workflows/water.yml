@@ -1,0 +1,15 @@
+name: รดน้ำอัตโนมัติ
+
+on:
+  schedule:
+    - cron: '0 23 * * 1-5'   # รดเช้า 06:00 (UTC+7) จันทร์-ศุกร์
+    - cron: '0 11 * * *'     # รดเย็น 18:00 (UTC+7) ทุกวัน
+  workflow_dispatch:          # กดรันเองได้ด้วย
+
+jobs:
+  send-to-thingspeak:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ส่งข้อมูลไป ThingSpeak
+        run: |
+          curl "https://api.thingspeak.com/update?api_key=4DJYWFHXB18MR0BE&field1=5"
