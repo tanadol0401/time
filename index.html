@@ -14,9 +14,7 @@
     }
     h3 { color: #ff6600; margin-bottom: 12px; font-size: 15px; }
     label { display: block; margin-bottom: 4px; color: #aaa; font-size: 12px; }
-    input[type="number"],
-    input[type="text"],
-    input[type="time"] {
+    input[type="text"], input[type="time"] {
       width: 100%;
       padding: 8px;
       background: #2c2f35;
@@ -25,6 +23,15 @@
       border-radius: 4px;
       margin-bottom: 10px;
       color-scheme: dark;
+    }
+    select {
+      width: 100%;
+      padding: 8px;
+      background: #2c2f35;
+      border: 1px solid #444;
+      color: white;
+      border-radius: 4px;
+      margin-bottom: 10px;
     }
     .section {
       background: #222426;
@@ -42,16 +49,14 @@
       cursor: pointer;
       font-size: 13px;
     }
-    .btn-blue   { background: #1e6fbf; color: white; width: 100%; margin-top: 8px; }
-    .btn-green  { background: #1a9e4a; color: white; }
-    .btn-red    { background: #c0392b; color: white; }
-    .btn-gray   { background: #444; color: white; }
+    .btn-blue  { background: #1e6fbf; color: white; width: 100%; margin-top: 8px; }
+    .btn-green { background: #1a9e4a; color: white; }
+    .btn-red   { background: #c0392b; color: white; }
+    .btn-gray  { background: #444; color: white; }
 
-    /* วันในสัปดาห์ */
     .day-selector { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
     .day-btn {
-      flex: 1;
-      min-width: 36px;
+      flex: 1; min-width: 36px;
       padding: 8px 4px;
       border-radius: 4px;
       border: 1px solid #444;
@@ -62,68 +67,58 @@
       font-size: 12px;
       user-select: none;
     }
-    .day-btn.selected {
-      background: #ff6600;
-      color: white;
-      border-color: #ff6600;
-    }
+    .day-btn.selected { background: #ff6600; color: white; border-color: #ff6600; }
 
     .schedule-item {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       background: #2c2f35;
       border: 1px solid #444;
       border-radius: 4px;
       padding: 10px 12px;
       margin-bottom: 8px;
     }
-    .schedule-item .time-label {
-      font-size: 20px;
-      font-weight: bold;
-      color: #ff6600;
-      min-width: 60px;
-    }
-    .schedule-item .detail {
-      flex: 1;
-      padding: 0 10px;
-      font-size: 12px;
-      color: #aaa;
-    }
-    .schedule-item .detail .name { color: white; font-size: 13px; margin-bottom: 2px; }
-    .schedule-item .detail .days { color: #f5a623; }
-    .schedule-item .status-dot {
+    .status-dot {
       width: 10px; height: 10px;
       border-radius: 50%;
       background: #444;
       margin-right: 8px;
       flex-shrink: 0;
     }
-    .schedule-item .status-dot.active { background: #1a9e4a; }
-    .schedule-item .status-dot.done   { background: #f5a623; }
+    .status-dot.active { background: #1a9e4a; }
+    .status-dot.done   { background: #f5a623; }
+    .time-label { font-size: 20px; font-weight: bold; color: #ff6600; min-width: 60px; }
+    .detail { flex: 1; padding: 0 10px; font-size: 12px; color: #aaa; }
+    .detail .name { color: white; font-size: 13px; margin-bottom: 2px; }
+    .detail .days { color: #f5a623; }
 
     #global-status {
-      text-align: center;
-      padding: 10px;
-      border-radius: 6px;
-      margin-bottom: 10px;
-      font-size: 13px;
-      background: #2c2f35;
+      text-align: center; padding: 10px;
+      border-radius: 6px; margin-bottom: 10px;
+      font-size: 13px; background: #2c2f35;
     }
     #global-status.running { border: 1px solid #1a9e4a; color: #1a9e4a; }
-    #global-status.stopped { border: 1px solid #444;    color: #aaa; }
+    #global-status.stopped { border: 1px solid #444; color: #aaa; }
+
     #clock { text-align: center; font-size: 32px; font-weight: bold; color: white; letter-spacing: 2px; }
     #date-display { text-align: center; color: #aaa; font-size: 12px; margin: 4px 0 12px; }
+
+    .current-status-box {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; padding: 12px;
+      border-radius: 6px; margin-bottom: 4px;
+      font-size: 16px; font-weight: bold;
+    }
+    .current-status-box.on  { background: #1a3d2b; border: 1px solid #1a9e4a; color: #1a9e4a; }
+    .current-status-box.off { background: #2c1f1f; border: 1px solid #c0392b; color: #c0392b; }
+    .current-status-box.loading { background: #2c2f35; border: 1px solid #444; color: #aaa; }
+    #last-updated { text-align: center; color: #555; font-size: 11px; margin-top: 4px; }
+
     #log {
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 4px;
-      padding: 10px;
-      font-size: 12px;
-      max-height: 130px;
-      overflow-y: auto;
-      color: #73bf69;
-      font-family: monospace;
+      background: #111; border: 1px solid #333;
+      border-radius: 4px; padding: 10px;
+      font-size: 12px; max-height: 120px;
+      overflow-y: auto; color: #73bf69; font-family: monospace;
     }
     .log-entry { margin-bottom: 4px; }
     .log-entry.error { color: #e74c3c; }
@@ -141,16 +136,28 @@
     <div id="global-status" class="stopped">⏹ ยังไม่ได้เริ่ม Scheduler</div>
   </div>
 
-  <!-- เพิ่มตารางรดน้ำ -->
+  <!-- สถานะล่าสุดจาก ThingSpeak -->
+  <div class="section">
+    <h3>💧 สถานะปัจจุบัน</h3>
+    <div class="current-status-box loading" id="status-box">
+      ⏳ กำลังโหลด...
+    </div>
+    <div id="last-updated">--</div>
+  </div>
+
+  <!-- เพิ่มตาราง -->
   <div class="section">
     <h3>🌱 เพิ่มตารางรดน้ำ</h3>
-
-    <label>ชื่อรอบ (เช่น รดเช้า)</label>
-    <input type="text" id="new-label" placeholder="รดน้ำเช้า">
-
-    <label>เวลา</label>
-    <input type="time" id="new-time" value="06:00">
-
+    <div class="row">
+      <div>
+        <label>ชื่อรอบ</label>
+        <input type="text" id="new-label" placeholder="รดน้ำเช้า">
+      </div>
+      <div>
+        <label>เวลา</label>
+        <input type="time" id="new-time" value="06:00">
+      </div>
+    </div>
     <label>วันที่ต้องการรด</label>
     <div class="day-selector">
       <div class="day-btn" data-day="0" onclick="toggleDay(this)">อา</div>
@@ -161,13 +168,11 @@
       <div class="day-btn selected" data-day="5" onclick="toggleDay(this)">ศ</div>
       <div class="day-btn" data-day="6" onclick="toggleDay(this)">ส</div>
     </div>
-
     <label>สถานะ</label>
-    <select id="new-field1" style="width:100%;padding:8px;background:#2c2f35;border:1px solid #444;color:white;border-radius:4px;margin-bottom:10px;">
+    <select id="new-field1">
       <option value="5">เปิด</option>
       <option value="0">ปิด</option>
     </select>
-
     <button class="btn-blue" onclick="addSchedule()">➕ เพิ่มรอบนี้</button>
   </div>
 
@@ -190,9 +195,11 @@
   </div>
 
 <script>
-  const API_KEY = "4DJYWFHXB18MR0BE"; // ← Fixed API Key
+  const WRITE_KEY   = "4DJYWFHXB18MR0BE";
+  const READ_KEY    = "ASKD66ROQFDS8G89";
+  const CHANNEL_ID  = "3349498";
+  const STORAGE_KEY = "watering_schedules";
 
-  const DAY_NAMES = ["อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัส","ศุกร์","เสาร์"];
   const DAY_SHORT = ["อา","จ","อ","พ","พฤ","ศ","ส"];
 
   let schedules = [];
@@ -200,23 +207,74 @@
   let tickInterval = null;
   let lastCheckedMinute = "";
 
-  // นาฬิกา
+  // ── นาฬิกา ──
   setInterval(() => {
     const now = new Date();
-    const h = String(now.getHours()).padStart(2,'0');
-    const m = String(now.getMinutes()).padStart(2,'0');
-    const s = String(now.getSeconds()).padStart(2,'0');
-    document.getElementById("clock").innerText = `${h}:${m}:${s}`;
+    document.getElementById("clock").innerText =
+      [now.getHours(), now.getMinutes(), now.getSeconds()]
+        .map(n => String(n).padStart(2,'0')).join(':');
     document.getElementById("date-display").innerText =
       now.toLocaleDateString('th-TH', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
   }, 1000);
 
-  function toggleDay(el) {
-    el.classList.toggle("selected");
+  // ── โหลด scheduler จาก localStorage ──
+  function loadSchedules() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        schedules = JSON.parse(saved);
+        schedules.forEach(s => s.sentToday = false); // reset sentToday ทุกครั้งที่เปิด
+        addLog("📂 โหลดตารางจากที่บันทึกไว้แล้ว");
+        renderList();
+      }
+    } catch(e) { console.error(e); }
   }
+
+  // ── บันทึก scheduler ลง localStorage ──
+  function saveSchedules() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(schedules));
+  }
+
+  // ── ดึงสถานะล่าสุดจาก ThingSpeak ──
+  function fetchCurrentStatus() {
+    const box = document.getElementById("status-box");
+    box.className = "current-status-box loading";
+    box.innerText = "⏳ กำลังโหลด...";
+
+    fetch(`https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds/last.json?api_key=${READ_KEY}`)
+      .then(r => r.json())
+      .then(data => {
+        const val = parseFloat(data.field1);
+        const time = new Date(data.created_at).toLocaleString('th-TH');
+        if (val === 5) {
+          box.className = "current-status-box on";
+          box.innerText = "💧 เปิดปั๊มน้ำ (field1 = 5)";
+        } else if (val === 0) {
+          box.className = "current-status-box off";
+          box.innerText = "⛔ ปิดปั๊มน้ำ (field1 = 0)";
+        } else {
+          box.className = "current-status-box loading";
+          box.innerText = `📊 ค่าล่าสุด: ${val}`;
+        }
+        document.getElementById("last-updated").innerText = `อัปเดตล่าสุด: ${time}`;
+      })
+      .catch(() => {
+        box.className = "current-status-box loading";
+        box.innerText = "❌ โหลดสถานะไม่สำเร็จ";
+      });
+  }
+
+  function toggleDay(el) { el.classList.toggle("selected"); }
 
   function getSelectedDays() {
     return [...document.querySelectorAll(".day-btn.selected")].map(el => parseInt(el.dataset.day));
+  }
+
+  function daysLabel(days) {
+    if (days.length === 7) return "ทุกวัน";
+    if (JSON.stringify(days) === JSON.stringify([1,2,3,4,5])) return "จันทร์–ศุกร์";
+    if (JSON.stringify(days) === JSON.stringify([0,6])) return "เสาร์–อาทิตย์";
+    return days.map(d => DAY_SHORT[d]).join(", ");
   }
 
   function addSchedule() {
@@ -225,30 +283,19 @@
     const field1 = document.getElementById("new-field1").value;
     const days   = getSelectedDays();
 
-    if (!time)         { alert("กรุณาเลือกเวลา"); return; }
+    if (!time)             { alert("กรุณาเลือกเวลา"); return; }
     if (days.length === 0) { alert("กรุณาเลือกอย่างน้อย 1 วัน"); return; }
 
-    schedules.push({
-      id: Date.now(),
-      time, label, field1,
-      days,
-      sentToday: false,
-      lastSent: null
-    });
+    schedules.push({ id: Date.now(), time, label, field1, days, sentToday: false, lastSent: null });
     schedules.sort((a,b) => a.time.localeCompare(b.time));
+    saveSchedules();
     renderList();
   }
 
   function removeSchedule(id) {
     schedules = schedules.filter(s => s.id !== id);
+    saveSchedules();
     renderList();
-  }
-
-  function daysLabel(days) {
-    if (days.length === 7) return "ทุกวัน";
-    if (JSON.stringify(days) === JSON.stringify([1,2,3,4,5])) return "จันทร์–ศุกร์";
-    if (JSON.stringify(days) === JSON.stringify([0,6])) return "เสาร์–อาทิตย์";
-    return days.map(d => DAY_SHORT[d]).join(", ");
   }
 
   function renderList() {
@@ -259,10 +306,10 @@
     }
     el.innerHTML = schedules.map(s => `
       <div class="schedule-item">
-        <div class="status-dot ${s.sentToday ? 'done' : (schedulerRunning ? 'active' : '')}" id="dot-${s.id}"></div>
+        <div class="status-dot ${s.sentToday ? 'done' : (schedulerRunning ? 'active' : '')}"></div>
         <div class="time-label">${s.time}</div>
         <div class="detail">
-          <div class="name">${s.label}</div>
+          <div class="name">${s.label} — ${s.field1 == 5 ? '💧 เปิด' : '⛔ ปิด'}</div>
           <div class="days">📅 ${daysLabel(s.days)}</div>
           <div>${s.lastSent ? '✅ ส่งล่าสุด: ' + s.lastSent : '⏳ รอส่ง'}</div>
         </div>
@@ -273,7 +320,6 @@
 
   function startScheduler() {
     if (schedules.length === 0) { alert("กรุณาเพิ่มตารางก่อน"); return; }
-
     schedulerRunning = true;
     document.getElementById("global-status").className = "running";
     document.getElementById("global-status").innerText = "🟢 Scheduler กำลังทำงาน...";
@@ -283,9 +329,9 @@
       const currentDay = now.getDay();
       const currentMinute = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
-      // reset เที่ยงคืน
       if (currentMinute === "00:00" && lastCheckedMinute !== "00:00") {
         schedules.forEach(s => s.sentToday = false);
+        saveSchedules();
         addLog("🔄 รีเซ็ตประจำวัน (เที่ยงคืน)");
         renderList();
       }
@@ -297,6 +343,7 @@
             s.sentToday = true;
             s.lastSent = now.toLocaleTimeString('th-TH');
             sendToThingSpeak(s.label, s.field1);
+            saveSchedules();
             renderList();
           }
         });
@@ -317,8 +364,7 @@
   }
 
   function sendToThingSpeak(label, field1) {
-    let url = `https://api.thingspeak.com/update?api_key=${API_KEY}&field1=${field1}`;
-    fetch(url)
+    fetch(`https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field1=${field1}`)
       .then(r => r.text())
       .then(res => {
         const time = new Date().toLocaleTimeString('th-TH');
@@ -326,6 +372,7 @@
           addLog(`❌ [${time}] ${label} — ส่งไม่สำเร็จ`, true);
         } else {
           addLog(`✅ [${time}] ${label} — ส่งสำเร็จ! Entry: ${res}`);
+          setTimeout(fetchCurrentStatus, 3000); // refresh สถานะหลังส่ง 3 วิ
         }
       })
       .catch(e => addLog(`❌ Error: ${e}`, true));
@@ -339,6 +386,11 @@
     log.prepend(div);
     while (log.children.length > 50) log.removeChild(log.lastChild);
   }
+
+  // ── เริ่มต้น ──
+  loadSchedules();       // โหลดตารางที่บันทึกไว้
+  fetchCurrentStatus();  // ดึงสถานะล่าสุดจาก ThingSpeak
+  setInterval(fetchCurrentStatus, 30000); // refresh ทุก 30 วิ
 </script>
 </body>
 </html>
